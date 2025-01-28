@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('title');
             $table->longText('description');
             $table->string('status');
@@ -21,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by');
             $table->foreign('created_by')->on('users')->references('id');
             $table->foreign('updated_by')->on('users')->references('id');
+            $table->timestamps();
         });
     }
 
