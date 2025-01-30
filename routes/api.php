@@ -24,9 +24,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::prefix('tasks')->group(function () {
         Route::get('/', GetAllTasksController::class);
         Route::post('/', CreateTaskController::class);
-        Route::put('/', UpdateTaskController::class);
-        Route::delete('/', DeleteTaskController::class);
-        Route::get('/{task}', GetTaskController::class);
+        Route::prefix('{task}')->group(function () {
+            Route::get('/', GetTaskController::class);
+            Route::put('/', UpdateTaskController::class);
+            Route::delete('/', DeleteTaskController::class);
+        });
     });
 
 });
