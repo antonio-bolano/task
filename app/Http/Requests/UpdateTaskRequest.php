@@ -6,14 +6,14 @@ use App\Enums\TaskStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreateTaskRequest extends FormRequest
+class UpdateTaskRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->check();
     }
 
     /**
@@ -24,17 +24,16 @@ class CreateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'required:string',
-            'status' => Rule::enum(TaskStatus::class),
-            'due_date' => 'date|date_format:Y-m-d|after:today',
+            "title" => "string",
+            "description" => "string",
+            "status" => Rule::enum(TaskStatus::class),
+            "due_date" => "date|date_format:Y-m-d|after:today",
         ];
     }
 
     public function validated($key = null, $default = null)
     {
         return array_merge(parent::validated(), [
-            'created_by' => auth()->id(),
             'updated_by' => auth()->id(),
         ]);
     }

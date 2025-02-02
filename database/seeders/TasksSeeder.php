@@ -14,7 +14,6 @@ class TasksSeeder extends Seeder
     {
         Task::factory()
             ->count(5)
-            ->open()
             ->create();
     }
 }

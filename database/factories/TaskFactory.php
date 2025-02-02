@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\TaskStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,13 +20,25 @@ class TaskFactory extends Factory
         return [
             'title' => $this->faker->text(),
             'description' => $this->faker->text(),
+            'status' => $this->faker->randomElement(['in_progress', 'done', 'todo']),
+            'due_date' => $this->faker->dateTimeBetween('now', '+1 month'),
             'created_by' => 1,
             'updated_by' => 1,
         ];
     }
 
-    public function open(): TaskFactory
+    public function todo(): TaskFactory
     {
-        return $this->state(fn() => ['status' => 'Open']);
+        return $this->state(fn() => ['status' => TaskStatus::Todo]);
+    }
+
+    public function inProgress(): TaskFactory
+    {
+        return $this->state(fn() => ['status' => TaskStatus::InProgress]);
+    }
+
+    public function done(): TaskFactory
+    {
+        return $this->state(fn() => ['status' =>TaskStatus::Done]);
     }
 }
