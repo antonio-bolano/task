@@ -6,6 +6,8 @@ use App\Enums\TaskStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+use OpenApi\Attributes as OA;
+
 class CreateTaskRequest extends FormRequest
 {
     /**
