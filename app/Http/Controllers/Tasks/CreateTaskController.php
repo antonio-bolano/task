@@ -73,7 +73,8 @@ class CreateTaskController extends Controller
                     new OA\Property(property: "created_by", type: "integer"),
                     new OA\Property(property: "updated_by", type: "integer"),
                     new OA\Property(property: "created_at", type: "string", format: "date-time"),
-                    new OA\Property(property: "updated_at", type: "string", format: "date-time")
+                    new OA\Property(property: "updated_at", type: "string", format: "date-time"),
+                    new OA\Property(property: "user", type: "object", format: "object")
                 ]
             )
         )

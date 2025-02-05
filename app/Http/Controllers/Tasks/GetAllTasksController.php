@@ -12,16 +12,9 @@ class GetAllTasksController extends Controller
     #[OA\Get(
         path: "/api/tasks",
         summary: "List tasks",
-        description: "Retrieve a list of tasks",
+        description: "Retrieve all tasks.",
         tags: ["Tasks"],
         security: [["bearerAuth" => []]]
-    )]
-    #[OA\Parameter(
-        name: "page",
-        in: "query",
-        description: "Page number for pagination",
-        required: false,
-        schema: new OA\Schema(type: "integer", default: 1)
     )]
     #[OA\Response(
         response: 200,
@@ -37,19 +30,17 @@ class GetAllTasksController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer"),
                                 new OA\Property(property: "title", type: "string"),
+                                new OA\Property(property: "description", type: "string"),
+                                new OA\Property(property: "status", type: "string"),
+                                new OA\Property(property: "due_date", type: "date"),
+                                new OA\Property(property: "created_by", type: "integer"),
+                                new OA\Property(property: "updated_by", type: "integer"),
+                                new OA\Property(property: "created_at", type: "integer"),
+                                new OA\Property(property: "updated_at", type: "datetime"),
+                                new OA\Property(property: "user", type: "object"),
                                 // ... other task properties
                             ]
                         )
-                    ),
-                    new OA\Property(
-                        property: "meta",
-                        type: "object",
-                        properties: [
-                            new OA\Property(property: "current_page", type: "integer"),
-                            new OA\Property(property: "last_page", type: "integer"),
-                            new OA\Property(property: "per_page", type: "integer"),
-                            new OA\Property(property: "total", type: "integer")
-                        ]
                     )
                 ]
             )

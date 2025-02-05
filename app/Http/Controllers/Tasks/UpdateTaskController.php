@@ -24,15 +24,84 @@ class UpdateTaskController extends Controller
         required: true,
         schema: new OA\Schema(type: "integer")
     )]
-    #[OA\RequestBody(/* Similar to create request body */)]
+    #[OA\RequestBody(
+        description: "Task creation details",
+        required: true,
+        content: new OA\MediaType(
+            mediaType: "application/json",
+            schema: new OA\Schema(
+                required: ["title", "description"],
+                properties: [
+                    new OA\Property(
+                        property: "title",
+                        type: "string",
+                        maxLength: 255,
+                        example: "Complete project report"
+                    ),
+                    new OA\Property(
+                        property: "description",
+                        type: "string",
+                        example: "Finalize and submit the quarterly project report"
+                    ),
+                    new OA\Property(
+                        property: "status",
+                        type: "string",
+                        enum: ["pending", "in_progress", "completed"],
+                        example: "pending"
+                    ),
+                    new OA\Property(
+                        property: "due_date",
+                        type: "string",
+                        format: "date",
+                        example: "2024-12-31"
+                    ),
+                    new OA\Property(
+                        property: "user_id",
+                        type: "integer",
+                        format: 1,
+                        example: 1
+                    )
+                ]
+            )
+        )
+    )]
     #[OA\Response(
         response: 200,
         description: "Task updated successfully",
         content: new OA\MediaType(
             mediaType: "application/json",
             schema: new OA\Schema(
+                required: ["title", "description"],
                 properties: [
-                    // Updated task properties
+                    new OA\Property(
+                        property: "title",
+                        type: "string",
+                        maxLength: 255,
+                        example: "Complete project report"
+                    ),
+                    new OA\Property(
+                        property: "description",
+                        type: "string",
+                        example: "Finalize and submit the quarterly project report"
+                    ),
+                    new OA\Property(
+                        property: "status",
+                        type: "string",
+                        enum: ["pending", "in_progress", "completed"],
+                        example: "pending"
+                    ),
+                    new OA\Property(
+                        property: "due_date",
+                        type: "string",
+                        format: "date",
+                        example: "2024-12-31"
+                    ),
+                    new OA\Property(
+                        property: "user_id",
+                        type: "integer",
+                        format: 1,
+                        example: 1
+                    )
                 ]
             )
         )

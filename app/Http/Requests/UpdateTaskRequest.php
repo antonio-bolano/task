@@ -28,6 +28,7 @@ class UpdateTaskRequest extends FormRequest
             "description" => "string",
             "status" => Rule::enum(TaskStatus::class),
             "due_date" => "date|date_format:Y-m-d|after:today",
+            'user_id' => "integer|exists:users,id|nullable",
         ];
     }
 
