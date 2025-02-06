@@ -8,12 +8,6 @@ use App\Http\Requests\CreateProjectRequest;
 use App\Models\Project;
 use OpenApi\Attributes as OA;
 
-#[OA\SecurityScheme(
-    securityScheme: "bearerAuth",
-    type: "http",
-    scheme: "bearer",
-    bearerFormat: "JWT"
-)]
 class CreateProjectController extends Controller
 {
     #[OA\Post(

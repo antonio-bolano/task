@@ -32,13 +32,19 @@ class GetAllTasksController extends Controller
                                 new OA\Property(property: "title", type: "string"),
                                 new OA\Property(property: "description", type: "string"),
                                 new OA\Property(property: "status", type: "string"),
-                                new OA\Property(property: "allStatus", type: "array"),
+                                new OA\Property(property: "allStatus", type: "array", items: new OA\Items(
+                                    properties: [
+                                        new OA\Property(property: "in_progress", type: "string"),
+                                        new OA\Property(property: "todo", type: "string"),
+                                        new OA\Property(property: "done", type: "string"),
+                                    ]
+                                )),
                                 new OA\Property(property: "due_date", type: "date"),
                                 new OA\Property(property: "created_by", type: "integer"),
                                 new OA\Property(property: "updated_by", type: "integer"),
                                 new OA\Property(property: "created_at", type: "integer"),
                                 new OA\Property(property: "updated_at", type: "datetime"),
-                                new OA\Property(property: "user", type: "object"),
+                                new OA\Property(property: "user", type: "object")
                                 // ... other task properties
                             ]
                         )

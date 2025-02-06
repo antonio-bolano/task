@@ -1,0 +1,480 @@
+openapi: 3.0.0
+info:
+  title: 'Task API'
+  description: "Always use the access token generated via api/login. If you don't have an account yet, you can create an account via api/register."
+  contact:
+    name: 'API Support'
+    email: antonio.bolano@web.de
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+    description: 'Local development server.'
+paths:
+  /api/login:
+    post:
+      tags:
+        - Authentication
+      summary: 'User Login'
+      description: 'Authenticate user and generate access token'
+      operationId: 09c1cdfe33bfbe0710861ac50c0adaec
+      requestBody:
+        description: 'User login credentials'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: test@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password
+              type: object
+      responses:
+        '200':
+          description: 'Successful login'
+          content:
+            application/json:
+              schema:
+                properties:
+                  user: { properties: { id: { type: integer, example: 1 }, name: { type: string, example: 'John Doe' }, email: { type: string, format: email, example: user@example.com } }, type: object }
+                  token: { description: 'Bearer token for authentication', type: string }
+                type: object
+        '401':
+          description: 'Invalid Credentials'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Invalid credentials' }
+                type: object
+  /api/projects:
+    get:
+      tags:
+        - Projects
+      summary: 'List projects'
+      description: 'Retrieve all projects.'
+      operationId: 53518c771d1130839f4411d030b9251e
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { properties: { id: { type: integer }, title: { type: string }, description: { type: string }, status: { type: string }, due_date: { type: string, format: date }, created_by: { type: integer }, updated_by: { type: integer }, created_at: { type: integer }, updated_at: { type: string, format: date-time }, user: { type: object } }, type: object } }
+                type: object
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - Projects
+      summary: 'Create a project'
+      description: 'Create a new project with specified details'
+      operationId: 928a795f2845b62c8a04789cdd7bb418
+      requestBody:
+        description: 'Project creation details'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - title
+                - description
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                  example: 'Complete project report'
+                description:
+                  type: string
+                  example: 'Finalize and submit the quarterly project report'
+              type: object
+      responses:
+        '201':
+          description: 'Project created successfully'
+          content:
+            application/json:
+              schema:
+                properties:
+                  id: { type: integer }
+                  title: { type: string }
+                  description: { type: string }
+                type: object
+        '422':
+          description: 'Validation Error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'The title field is required.' }
+                  errors: { properties: { title: { type: array, items: { type: string, example: 'The title field is required.' } } }, type: object }
+                type: object
+      security:
+        -
+          bearerAuth: []
+  '/api/projects/{id}':
+    get:
+      tags:
+        - Projects
+      summary: 'Get a specific project'
+      description: 'Retrieve details of a specific project'
+      operationId: ce080f46fdc7b0709b68203b286d5986
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Project ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  id: { type: integer }
+                  title: { type: string }
+                  description: { type: string }
+                  created_by: { type: integer }
+                  updated_by: { type: integer }
+                  created_at: { type: integer }
+                  updated_at: { type: string, format: date-time }
+                  user: { type: object }
+                type: object
+        '404':
+          description: 'Project not found'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Project not found' }
+                type: object
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - Projects
+      summary: 'Update a project'
+      description: 'Update details of an existing project'
+      operationId: e19aa65145252e4ccc88221c1f048a67
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Task ID'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: 'Project creation details'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - title
+                - description
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                  example: 'Complete project report'
+                description:
+                  type: string
+                  example: 'Finalize and submit the quarterly project report'
+                user_id:
+                  type: integer
+                  format: '1'
+                  example: 1
+              type: object
+      responses:
+        '200':
+          description: 'Task updated successfully'
+          content:
+            application/json:
+              schema:
+                required:
+                  - title
+                  - description
+                properties:
+                  title: { type: string, maxLength: 255, example: 'Complete project report' }
+                  description: { type: string, example: 'Finalize and submit the quarterly project report' }
+                  status: { type: string, enum: [pending, in_progress, completed], example: pending }
+                  due_date: { type: string, format: date, example: '2024-12-31' }
+                  user_id: { type: integer, format: '1', example: 1 }
+                type: object
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - Tasks
+      summary: 'Delete a project'
+      description: 'Remove a specific project'
+      operationId: e25cf466c6051e8c34c904a89236f5e9
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Project ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Project deleted successfully'
+        '404':
+          description: 'Proje not found'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Project not found' }
+                type: object
+      security:
+        -
+          bearerAuth: []
+  /api/tasks:
+    get:
+      tags:
+        - Tasks
+      summary: 'List tasks'
+      description: 'Retrieve all tasks.'
+      operationId: 15116bcac198a2f87177f30bb039288a
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { properties: { id: { type: integer }, title: { type: string }, description: { type: string }, status: { type: string }, allStatus: { type: array, items: { properties: { in_progress: { type: string }, todo: { type: string }, done: { type: string } }, type: object } }, due_date: { type: string, format: date }, created_by: { type: integer }, updated_by: { type: integer }, created_at: { type: integer }, updated_at: { type: string, format: date-time }, user: { type: object } }, type: object } }
+                type: object
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - Tasks
+      summary: 'Create a task'
+      description: 'Create a new task with specified details'
+      operationId: 878491ac1ea724dae0fcfc7db43def7d
+      requestBody:
+        description: 'Task creation details'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - title
+                - description
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                  example: 'Complete project report'
+                description:
+                  type: string
+                  example: 'Finalize and submit the quarterly project report'
+                status:
+                  type: string
+                  enum: [pending, in_progress, completed]
+                  example: pending
+                due_date:
+                  type: string
+                  format: date
+                  example: '2024-12-31'
+              type: object
+      responses:
+        '201':
+          description: 'Task created successfully'
+          content:
+            application/json:
+              schema:
+                properties:
+                  id: { type: integer }
+                  title: { type: string }
+                  description: { type: string }
+                  status: { type: string }
+                  due_date: { type: string, format: date }
+                  created_by: { type: integer }
+                  updated_by: { type: integer }
+                  created_at: { type: string, format: date-time }
+                  updated_at: { type: string, format: date-time }
+                  user: { type: object, format: object }
+                type: object
+        '422':
+          description: 'Validation Error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'The title field is required.' }
+                  errors: { properties: { title: { type: array, items: { type: string, example: 'The title field is required.' } } }, type: object }
+                type: object
+      security:
+        -
+          bearerAuth: []
+  '/api/tasks/{id}':
+    get:
+      tags:
+        - Tasks
+      summary: 'Get a specific task'
+      description: 'Retrieve details of a specific task'
+      operationId: 038c932a6207169959ebc0ca324bd918
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Task ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  id: { type: integer }
+                  title: { type: string }
+                  description: { type: string }
+                  status: { type: string }
+                  due_date: { type: string, format: date }
+                  created_by: { type: integer }
+                  updated_by: { type: integer }
+                  created_at: { type: integer }
+                  updated_at: { type: string, format: date-time }
+                  user: { type: object }
+                type: object
+        '404':
+          description: 'Task not found'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Task not found' }
+                type: object
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - Tasks
+      summary: 'Update a task'
+      description: 'Update details of an existing task'
+      operationId: f5fe2d2a9d8ff8600bfa9bdb5a102e4b
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Task ID'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: 'Task creation details'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - title
+                - description
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                  example: 'Complete project report'
+                description:
+                  type: string
+                  example: 'Finalize and submit the quarterly project report'
+                status:
+                  type: string
+                  enum: [pending, in_progress, completed]
+                  example: pending
+                due_date:
+                  type: string
+                  format: date
+                  example: '2024-12-31'
+                user_id:
+                  type: integer
+                  format: '1'
+                  example: 1
+              type: object
+      responses:
+        '200':
+          description: 'Task updated successfully'
+          content:
+            application/json:
+              schema:
+                required:
+                  - title
+                  - description
+                properties:
+                  title: { type: string, maxLength: 255, example: 'Complete project report' }
+                  description: { type: string, example: 'Finalize and submit the quarterly project report' }
+                  status: { type: string, enum: [pending, in_progress, completed], example: pending }
+                  due_date: { type: string, format: date, example: '2024-12-31' }
+                  user_id: { type: integer, format: '1', example: 1 }
+                type: object
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - Tasks
+      summary: 'Delete a task'
+      description: 'Remove a specific task'
+      operationId: 8a6d1e4b2984e3049c5539eb0e1c8308
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Task ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Task deleted successfully'
+        '404':
+          description: 'Task not found'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Task not found' }
+                type: object
+      security:
+        -
+          bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      bearerFormat: JWT
+      scheme: bearer
+tags:
+  -
+    name: Authentication
+    description: Authentication
+  -
+    name: Projects
+    description: Projects
+  -
+    name: Tasks
+    description: Tasks
