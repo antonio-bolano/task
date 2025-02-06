@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Tasks;
+namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
-use App\Models\Task;
+
+use App\Models\Project;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
-class GetAllTasksController extends Controller
+class GetAllProjectsController extends Controller
 {
     #[OA\Get(
-        path: "/api/tasks",
-        summary: "List tasks",
-        description: "Retrieve all tasks.",
-        tags: ["Tasks"],
+        path: "/api/projects",
+        summary: "List projects",
+        description: "Retrieve all projects.",
+        tags: ["Projects"],
         security: [["bearerAuth" => []]]
     )]
     #[OA\Response(
@@ -32,14 +33,13 @@ class GetAllTasksController extends Controller
                                 new OA\Property(property: "title", type: "string"),
                                 new OA\Property(property: "description", type: "string"),
                                 new OA\Property(property: "status", type: "string"),
-                                new OA\Property(property: "allStatus", type: "array"),
                                 new OA\Property(property: "due_date", type: "date"),
                                 new OA\Property(property: "created_by", type: "integer"),
                                 new OA\Property(property: "updated_by", type: "integer"),
                                 new OA\Property(property: "created_at", type: "integer"),
                                 new OA\Property(property: "updated_at", type: "datetime"),
                                 new OA\Property(property: "user", type: "object"),
-                                // ... other task properties
+                                // ... other project properties
                             ]
                         )
                     )
@@ -49,6 +49,6 @@ class GetAllTasksController extends Controller
     )]
     public function __invoke(Request $request)
     {
-        return Task::all();
+        return Project::all();
     }
 }

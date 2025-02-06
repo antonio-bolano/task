@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\Tasks;
+namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
-class UpdateTaskController extends Controller
+class UpdateProjectController extends Controller
 {
     #[OA\Put(
-        path: "/api/tasks/{id}",
-        summary: "Update a task",
-        description: "Update details of an existing task",
-        tags: ["Tasks"],
+        path: "/api/projects/{id}",
+        summary: "Update a project",
+        description: "Update details of an existing project",
+        tags: ["Projects"],
         security: [["bearerAuth" => []]]
     )]
     #[OA\Parameter(
@@ -25,7 +27,7 @@ class UpdateTaskController extends Controller
         schema: new OA\Schema(type: "integer")
     )]
     #[OA\RequestBody(
-        description: "Task creation details",
+        description: "Project creation details",
         required: true,
         content: new OA\MediaType(
             mediaType: "application/json",
@@ -42,18 +44,6 @@ class UpdateTaskController extends Controller
                         property: "description",
                         type: "string",
                         example: "Finalize and submit the quarterly project report"
-                    ),
-                    new OA\Property(
-                        property: "status",
-                        type: "string",
-                        enum: ["pending", "in_progress", "completed"],
-                        example: "pending"
-                    ),
-                    new OA\Property(
-                        property: "due_date",
-                        type: "string",
-                        format: "date",
-                        example: "2024-12-31"
                     ),
                     new OA\Property(
                         property: "user_id",
@@ -106,12 +96,8 @@ class UpdateTaskController extends Controller
             )
         )
     )]
-    public function __invoke(Task $task, UpdateTaskRequest $request)
+    public function __invoke(Project $project, UpdateProjectRequest $request)
     {
-
-        dd($request->validated());
-        $task->update();
-
-        return $task->fresh();
+        $project->update($request->validated());
     }
 }

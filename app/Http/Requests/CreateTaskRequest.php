@@ -30,6 +30,8 @@ class CreateTaskRequest extends FormRequest
             'description' => 'required:string',
             'status' => Rule::enum(TaskStatus::class),
             'due_date' => 'date|date_format:Y-m-d|after:today',
+            'user_id' => "integer|exists:users,id|nullable",
+            'project_id' => "integer|exists:tasks,id|nullable",
         ];
     }
 

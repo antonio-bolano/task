@@ -21,8 +21,10 @@ return new class extends Migration
             $table->date('due_date')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
+            $table->unsignedBigInteger('project_id')->nullable();
             $table->foreign('created_by')->on('users')->references('id');
             $table->foreign('updated_by')->on('users')->references('id');
+            $table->foreign('project_id')->on('projects')->references('id');
             $table->timestamps();
         });
     }
